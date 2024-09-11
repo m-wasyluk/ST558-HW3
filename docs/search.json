@@ -1,0 +1,23 @@
+[
+  {
+    "objectID": "control_flow_functions.html",
+    "href": "control_flow_functions.html",
+    "title": "Control Flow & Functions",
+    "section": "",
+    "text": "#|echo: false\nload(\"hw2_list.rda\")"
+  },
+  {
+    "objectID": "control_flow_functions.html#task-1",
+    "href": "control_flow_functions.html#task-1",
+    "title": "Control Flow & Functions",
+    "section": "Task 1",
+    "text": "Task 1\nsetup\n\nbp_list$treatment$status &lt;- character(20)\nbp_list$placebo$status &lt;- character(10)\n\nloop over rows to assign new column\n\nfor(i in 1:dim(bp_list$treatment)[1]){\n  if(bp_list$treatment[i,]$post_bp &lt;= 120){\n    bp_list$treatment[i,]$status &lt;- \"optimal\"\n  } else if(bp_list$treatment[i,]$post_bp &lt;= 130) {\n    bp_list$treatment[i,]$status &lt;- \"borderline\"\n  } else {\n    bp_list$treatment[i,]$status &lt;- \"high\"\n  }\n}\n\nfor(i in 1:dim(bp_list$placebo)[1]){\n  if(bp_list$placebo[i,]$post_bp &lt;= 120){\n    bp_list$placebo[i,]$status &lt;- \"optimal\"\n  } else if(bp_list$placebo[i,]$post_bp &lt;= 130) {\n    bp_list$placebo[i,]$status &lt;- \"borderline\"\n  } else {\n    bp_list$placebo[i,]$status &lt;- \"high\"\n  }\n}"
+  },
+  {
+    "objectID": "control_flow_functions.html#task-2",
+    "href": "control_flow_functions.html#task-2",
+    "title": "Control Flow & Functions",
+    "section": "Task 2",
+    "text": "Task 2\nwrite our function, first looping over the data frames before looping over fields; we build the names for the output list as we go\n\ntreatment_vs_placebo_statistics &lt;- function(x, stat_func_name=\"mean\"){\n  stat_func &lt;- get(stat_func_name)\n  num_permutations &lt;- 6\n  df_names &lt;- c(\"treatment\", \"placebo\")\n  field_names &lt;- c(\"pre_bp\", \"post_bp\", \"diff_bp\")\n  \n  results &lt;- vector(mode = \"list\", length = num_permutations)\n  results_names &lt;- c()\n  pos_count &lt;- 1\n  \n  for(df_name in df_names){\n    for(field_name in field_names){\n      results[[pos_count]] &lt;- stat_func(bp_list[[df_name]][[field_name]])\n      results_names &lt;- c(results_names, paste(df_name, field_name, stat_func_name, sep = \"_\"))\n      \n      pos_count = pos_count + 1\n    }\n  }\n  \n  names(results) &lt;- results_names\n  return(results)\n}\n\ntreatment_vs_placebo_statistics(bp_list)\n\n$treatment_pre_bp_mean\n[1] 131.6\n\n$treatment_post_bp_mean\n[1] 125.95\n\n$treatment_diff_bp_mean\n[1] 5.65\n\n$placebo_pre_bp_mean\n[1] 131.9\n\n$placebo_post_bp_mean\n[1] 128.9\n\n$placebo_diff_bp_mean\n[1] 3\n\ntreatment_vs_placebo_statistics(bp_list, \"var\")\n\n$treatment_pre_bp_var\n[1] 75.72632\n\n$treatment_post_bp_var\n[1] 78.99737\n\n$treatment_diff_bp_var\n[1] 117.8184\n\n$placebo_pre_bp_var\n[1] 149.8778\n\n$placebo_post_bp_var\n[1] 124.9889\n\n$placebo_diff_bp_var\n[1] 341.3333\n\ntreatment_vs_placebo_statistics(bp_list, \"sd\")\n\n$treatment_pre_bp_sd\n[1] 8.702087\n\n$treatment_post_bp_sd\n[1] 8.888046\n\n$treatment_diff_bp_sd\n[1] 10.85442\n\n$placebo_pre_bp_sd\n[1] 12.24246\n\n$placebo_post_bp_sd\n[1] 11.17984\n\n$placebo_diff_bp_sd\n[1] 18.47521\n\ntreatment_vs_placebo_statistics(bp_list, \"min\")\n\n$treatment_pre_bp_min\n[1] 115\n\n$treatment_post_bp_min\n[1] 114\n\n$treatment_diff_bp_min\n[1] -24\n\n$placebo_pre_bp_min\n[1] 114\n\n$placebo_post_bp_min\n[1] 105\n\n$placebo_diff_bp_min\n[1] -21\n\ntreatment_vs_placebo_statistics(bp_list, \"max\")\n\n$treatment_pre_bp_max\n[1] 151\n\n$treatment_post_bp_max\n[1] 146\n\n$treatment_diff_bp_max\n[1] 21\n\n$placebo_pre_bp_max\n[1] 152\n\n$placebo_post_bp_max\n[1] 143\n\n$placebo_diff_bp_max\n[1] 33"
+  }
+]
