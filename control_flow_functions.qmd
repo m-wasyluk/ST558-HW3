@@ -1,0 +1,78 @@
+---
+title: "Control Flow & Functions"
+format: html
+editor: visual
+---
+
+```{r}
+#|echo: false
+load("hw2_list.rda")
+```
+
+## Task 1
+
+setup
+
+```{r}
+bp_list$treatment$status <- character(20)
+bp_list$placebo$status <- character(10)
+```
+
+loop over rows to assign new column
+
+```{r}
+for(i in 1:dim(bp_list$treatment)[1]){
+  if(bp_list$treatment[i,]$post_bp <= 120){
+    bp_list$treatment[i,]$status <- "optimal"
+  } else if(bp_list$treatment[i,]$post_bp <= 130) {
+    bp_list$treatment[i,]$status <- "borderline"
+  } else {
+    bp_list$treatment[i,]$status <- "high"
+  }
+}
+
+for(i in 1:dim(bp_list$placebo)[1]){
+  if(bp_list$placebo[i,]$post_bp <= 120){
+    bp_list$placebo[i,]$status <- "optimal"
+  } else if(bp_list$placebo[i,]$post_bp <= 130) {
+    bp_list$placebo[i,]$status <- "borderline"
+  } else {
+    bp_list$placebo[i,]$status <- "high"
+  }
+}
+```
+
+## Task 2
+
+write our function, first looping over the data frames before looping over fields; we build the names for the output list as we go
+
+```{r}
+treatment_vs_placebo_statistics <- function(x, stat_func_name="mean"){
+  stat_func <- get(stat_func_name)
+  num_permutations <- 6
+  df_names <- c("treatment", "placebo")
+  field_names <- c("pre_bp", "post_bp", "diff_bp")
+  
+  results <- vector(mode = "list", length = num_permutations)
+  results_names <- c()
+  pos_count <- 1
+  
+  for(df_name in df_names){
+    for(field_name in field_names){
+      results[[pos_count]] <- stat_func(bp_list[[df_name]][[field_name]])
+      results_names <- c(results_names, paste(df_name, field_name, stat_func_name, sep = "_"))
+      
+      pos_count = pos_count + 1
+    }
+  }
+  
+  names(results) <- results_names
+  return(results)
+}
+
+treatment_vs_placebo_statistics(bp_list)
+treatment_vs_placebo_statistics(bp_list, "var")
+treatment_vs_placebo_statistics(bp_list, "sd")
+treatment_vs_placebo_statistics(bp_list, "min")
+treatment_vs_placebo_statistics(bp_list, "max")
+```
